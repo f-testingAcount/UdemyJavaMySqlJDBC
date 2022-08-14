@@ -30,6 +30,9 @@ public class TestMySqulJDBC {  //jdbc:mysql://localhost:3307/test?useTimezone=tr
                 System.out.print(" Telefono: " + resultado.getString("telefono"));
                 System.out.println(" ");
             }
+            resultado.close();
+            instruccion.close();
+            conexion.close();
         } catch (SQLException ex) {
             ex.printStackTrace(System.out);
         } 
