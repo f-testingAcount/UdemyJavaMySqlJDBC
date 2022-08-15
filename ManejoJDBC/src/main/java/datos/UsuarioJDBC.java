@@ -1,41 +1,41 @@
 package datos;
 
-import static datos.Conexion.*;
-import domain.Persona;
-import java.sql.*;
-import java.util.*;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import static datos.Conexion.close;
+import static datos.Conexion.getConnection;
+import domain.Usuario;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
-
-public class PersonaDAO { //DAO (data access object)
-
-    private static final String SQL_SELECT = "SELECT idpersona, nombre, apellido, email, telefono FROM persona"; // Para simplificar esta sentencia se puede colocar SELECT * FROM persona
-    private static final String SQL_INSERT = "INSERT INTO persona(nombre, apellido, email, telefono) VALUES(?, ?, ?, ?)";
-    private static final String SQL_UPDATE = "UPDATE persona SET nombre = ?, apellido = ?, email = ?, telefono = ? WHERE idpersona = ?";
-    private static final String SQL_DELETE = "DELETE FROM persona WHERE idpersona = ?";
+public class UsuarioJDBC {
+    private static final String SQL_SELECT = "SELECT idusuario, username, password FROM usuario"; // Para simplificar esta sentencia se puede colocar SELECT * FROM usuario
+    private static final String SQL_INSERT = "INSERT INTO usuario(username, password) VALUES(?, ?)";
+    private static final String SQL_UPDATE = "UPDATE usuario SET username = ?, password = ? WHERE idusuario = ?";
+    private static final String SQL_DELETE = "DELETE FROM usuario WHERE idusuario = ?";
     
-    public List<Persona> seleccionar() {
+    public List<Usuario> seleccionar() {
         Connection conn = null;
         PreparedStatement stmt = null; //PreparedStatement es una interface
         ResultSet rs = null;
-        Persona persona = null;
-        List<Persona> personas = new ArrayList<>();
+        Usuario usuario = null;
+        List<Usuario> usuarios = new ArrayList<>();
 
         try {
             conn = getConnection(); //Tenemos importado el static de clase Conexion.getconection() para evitar citar la clase
             stmt = conn.prepareStatement(SQL_SELECT); //preparedStatement es un metodo implementado de la interface PreparedStatement
             rs = stmt.executeQuery(); //con la variable resultado ejecutamos la consulta
             while (rs.next()) {
-                int idPersona = rs.getInt("idpersona");
-                String nombre = rs.getString("nombre");
-                String apellido = rs.getString("apellido");
-                String email = rs.getString("email");
-                String telefono = rs.getString("telefono");
-                persona = new Persona(idPersona, nombre, apellido, email, telefono); //Convertimos informacion de la base de datos en objetos java (en este caso de tipo Persona)
-                //Esta informacion puede ser utilizada y reutilizada por otros sistemas.
-                //En frameworks como hybernetes y jpa ejecutan esto internamente. En jdbc vemos la mecanica utilizada por esos sistemas
-                personas.add(persona);
+                int idUsuario = rs.getInt("idusuario");
+                String username = rs.getString("username");
+                String password = rs.getString("password");
+                usuario = new Usuario();
+                usuario.setIdusuario(idUsuario);
+                usuario.setUsername(username);
+                usuario.setPassword(password);
+                usuarios.add(usuario);
             }
         } catch (SQLException ex) {
             ex.printStackTrace(System.out);
@@ -48,21 +48,21 @@ public class PersonaDAO { //DAO (data access object)
                 ex.printStackTrace(System.out);
             }
         }
-        return personas;
+        return usuarios;
     }
     
-    public int insertar(Persona persona) {
+    public int insertar(Usuario usuario) {
         Connection conn = null;
         PreparedStatement stmt = null;
         int registros = 0;
         try {
             conn = getConnection();
             stmt = conn.prepareStatement(SQL_INSERT);
-            stmt.setString(1, persona.getNombre());
-            stmt.setString(2, persona.getApellido());
-            stmt.setString(3, persona.getEmail());
-            stmt.setString(4, persona.getTelefono());
+            stmt.setString(1, usuario.getUsername());
+            stmt.setString(2, usuario.getPassword());
+            System.out.println("Ejecutando query: " + SQL_INSERT);
             registros = stmt.executeUpdate();
+            System.out.println("Registros afectados: " + registros);
         } catch (SQLException ex) {
             ex.printStackTrace(System.out);
         }
@@ -77,19 +77,18 @@ public class PersonaDAO { //DAO (data access object)
         return registros;
     }
     
-    public int actualizar(Persona persona) {
+    public int actualizar(Usuario usuario) {
         Connection conn = null;
         PreparedStatement stmt = null;
         int registros = 0;
         try {
             conn = getConnection();
             stmt = conn.prepareStatement(SQL_UPDATE);
-            stmt.setString(1, persona.getNombre());
-            stmt.setString(2, persona.getApellido());
-            stmt.setString(3, persona.getEmail());
-            stmt.setString(4, persona.getTelefono());
-            stmt.setInt(5, persona.getIdPersona());
+            stmt.setString(1, usuario.getUsername());
+            stmt.setString(2, usuario.getPassword());
+            stmt.setInt(3, usuario.getIdusuario());
             registros = stmt.executeUpdate();
+            System.out.println("Registros afectados: " + registros);
         } catch (SQLException ex) {
             ex.printStackTrace(System.out);
         }
@@ -104,15 +103,16 @@ public class PersonaDAO { //DAO (data access object)
         return registros;
     }
     
-    public int eliminar(Persona persona) {
+    public int eliminar(Usuario usuario) {
         Connection conn = null;
         PreparedStatement stmt = null;
         int registros = 0;
         try {
             conn = getConnection();
             stmt = conn.prepareStatement(SQL_DELETE);
-            stmt.setInt(1, persona.getIdPersona());
+            stmt.setInt(1, usuario.getIdusuario());
             registros = stmt.executeUpdate();
+            System.out.println("Registros afectados: " + registros);
         } catch (SQLException ex) {
             ex.printStackTrace(System.out);
         }
