@@ -1,12 +1,12 @@
 package Ejecutable;
 
-import datos.UsuarioJDBC;
+import datos.UsuarioDAO;
 import domain.Usuario;
 import java.util.List;
 
 public class ManejoUsuario {
     public static void main(String[] args) {
-        UsuarioJDBC usuarioJdbc = new UsuarioJDBC();
+        UsuarioDAO usuarioJdbc = new UsuarioDAO();
         
         //Insertar un nuevo usuario
 //        Usuario usuario = new Usuario("Karl.lager", "789");
