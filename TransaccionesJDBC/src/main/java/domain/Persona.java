@@ -72,6 +72,4 @@ public class Persona { //Clase de dominio o clase de entidad
     public String toString() {
         return "Persona{" + "idPersona: " + idPersona + ", nombre: " + nombre + ", apellido: " + apellido + ", email: " + email + ", telefono: " + telefono + '}';
     }
-    
-    
 }

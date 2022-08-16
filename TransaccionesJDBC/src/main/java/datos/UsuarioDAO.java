@@ -1,7 +1,6 @@
 package datos;
 
-import static datos.Conexion.close;
-import static datos.Conexion.getConnection;
+import static datos.Conexion.*;
 import domain.Usuario;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -15,8 +14,15 @@ public class UsuarioDAO {
     private static final String SQL_INSERT = "INSERT INTO usuario(username, password) VALUES(?, ?)";
     private static final String SQL_UPDATE = "UPDATE usuario SET username = ?, password = ? WHERE idusuario = ?";
     private static final String SQL_DELETE = "DELETE FROM usuario WHERE idusuario = ?";
+    private Connection conexionTransaccional;
     
-    public List<Usuario> seleccionar() {
+    public UsuarioDAO(){}
+    
+    public UsuarioDAO(Connection conexionTransaccional){
+        this.conexionTransaccional = conexionTransaccional;
+    }
+    
+    public List<Usuario> seleccionar() throws SQLException {
         Connection conn = null;
         PreparedStatement stmt = null; //PreparedStatement es una interface
         ResultSet rs = null;
@@ -37,21 +43,19 @@ public class UsuarioDAO {
                 usuario.setPassword(password);
                 usuarios.add(usuario);
             }
-        } catch (SQLException ex) {
-            ex.printStackTrace(System.out);
+//        } catch (SQLException ex) {
+//            ex.printStackTrace(System.out);
         } finally {
-            try {
                 close(rs); //Los objetos se cierran en forma inversa a como fueron abiertos.
                 close(stmt);
-                close(conn);
-            } catch (SQLException ex) {
-                ex.printStackTrace(System.out);
-            }
+                if (conexionTransaccional == null) {
+                    Conexion.close(conn);
+                }
         }
         return usuarios;
     }
     
-    public int insertar(Usuario usuario) {
+    public int insertar(Usuario usuario) throws SQLException {
         Connection conn = null;
         PreparedStatement stmt = null;
         int registros = 0;
@@ -63,21 +67,19 @@ public class UsuarioDAO {
             System.out.println("Ejecutando query: " + SQL_INSERT);
             registros = stmt.executeUpdate();
             System.out.println("Registros afectados: " + registros);
-        } catch (SQLException ex) {
-            ex.printStackTrace(System.out);
+//        } catch (SQLException ex) {
+//            ex.printStackTrace(System.out);
         }
         finally {
-            try {
                 close(stmt);
-                close(conn);
-            } catch (SQLException ex) {
-                ex.printStackTrace(System.out);
-            }
+                if (conexionTransaccional == null) {
+                    Conexion.close(conn);
+                }
         }
         return registros;
     }
     
-    public int actualizar(Usuario usuario) {
+    public int actualizar(Usuario usuario) throws SQLException {
         Connection conn = null;
         PreparedStatement stmt = null;
         int registros = 0;
@@ -89,21 +91,19 @@ public class UsuarioDAO {
             stmt.setInt(3, usuario.getIdusuario());
             registros = stmt.executeUpdate();
             System.out.println("Registros afectados: " + registros);
-        } catch (SQLException ex) {
-            ex.printStackTrace(System.out);
+//        } catch (SQLException ex) {
+//            ex.printStackTrace(System.out);
         }
         finally {
-            try {
                 close(stmt);
-                close(conn);
-            } catch (SQLException ex) {
-                ex.printStackTrace(System.out);
+                if (conexionTransaccional == null) {
+                Conexion.close(conn);
             }
         }
         return registros;
     }
     
-    public int eliminar(Usuario usuario) {
+    public int eliminar(Usuario usuario) throws SQLException {
         Connection conn = null;
         PreparedStatement stmt = null;
         int registros = 0;
@@ -113,15 +113,13 @@ public class UsuarioDAO {
             stmt.setInt(1, usuario.getIdusuario());
             registros = stmt.executeUpdate();
             System.out.println("Registros afectados: " + registros);
-        } catch (SQLException ex) {
-            ex.printStackTrace(System.out);
+//        } catch (SQLException ex) {
+//            ex.printStackTrace(System.out);
         }
         finally {
-            try {
                 close(stmt);
-                close(conn);
-            } catch (SQLException ex) {
-                ex.printStackTrace(System.out);
+                if (conexionTransaccional == null) {
+                    Conexion.close(conn);
             }
         }
         return registros;

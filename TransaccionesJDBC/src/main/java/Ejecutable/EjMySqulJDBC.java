@@ -4,7 +4,7 @@ package Ejecutable;
 import java.sql.*;
 
 
-public class TestMySqulJDBC {  //jdbc:mysql://localhost:3307/test?useTimezone=true&serverTimezone=UTC
+public class EjMySqulJDBC {  //jdbc:mysql://localhost:3307/test?useTimezone=true&serverTimezone=UTC
     public static void main(String[] args) { //localhosts es igual a colocar 127.0.0.1
         //String url = "jdbc:mysql://localhost:3306/testprueba?useSSL=false&useTimezone=true&serverTimezoneUTC&allowPublicKeyRetrieval=true";
         String url = "jdbc:mysql://localhost:3306/testprueba?createDatabaseIfNotExist=true&useSSL=false&serverTimezone=UTC";

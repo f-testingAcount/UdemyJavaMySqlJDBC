@@ -4,11 +4,8 @@ import datos.Conexion;
 import datos.PersonaDAO;
 import domain.Persona;
 import java.sql.*;
-import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
-public class TestMajejoPersonas {
+public class EjMajejoPersonas {
     public static void main(String[] args) {
         
         Connection conexion = null;
@@ -41,7 +38,7 @@ public class TestMajejoPersonas {
 
         } catch (SQLException ex) {
             ex.printStackTrace(System.out);
-            System.out.println("Ejecutado Rollback ");
+            System.out.println("Ejecutado Rollback");
             try {
                 conexion.rollback();
             } catch (SQLException ex1) {
