@@ -1,9 +1,10 @@
 package Ejecutable;
 
 import datos.Conexion;
-import datos.PersonaDAO;
-import domain.Persona;
+import datos.PersonaDaoJDBC;
+import domain.PersonaDTO;
 import java.sql.*;
+import java.util.List;
 
 public class EjMajejoPersonas {
     public static void main(String[] args) {
@@ -16,23 +17,12 @@ public class EjMajejoPersonas {
                 conexion.setAutoCommit(false);
             }
             
-            PersonaDAO personaDao = new PersonaDAO(conexion);
-
-            Persona cambioPersona = new Persona();
-            cambioPersona.setIdPersona(2);
-            cambioPersona.setNombre("Paul");
-//            cambioPersona.setApellido("Schuartz11111111111111111111111111111111111111111111111");
-            cambioPersona.setApellido("Schuartz");
-            cambioPersona.setEmail("ps@mail.com");
-            cambioPersona.setTelefono("32658965");
-            personaDao.actualizar(cambioPersona);
+            PersonaDaoJDBC personaDao = new PersonaDaoJDBC(conexion);
             
-            Persona otraPersona = new Persona();
-            otraPersona.setNombre("Catherine");
-            otraPersona.setApellido("Fox");
-            otraPersona.setEmail("cf@mail.com");
-            otraPersona.setTelefono("32659878");
-            personaDao.insertar(otraPersona);
+            List<PersonaDTO> personas = personaDao.seleccionar();
+            for (PersonaDTO persona : personas) {
+                System.out.println("Persona DTO = " + persona);
+            }
             
             conexion.commit();
 
